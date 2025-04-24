@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Einmaleins-Trainer</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 1em;
+      background: #f0f4f8;
+    }
+    h1 {
+      margin-bottom: 0.5em;
+    }
+    .question {
+      font-size: 2em;
+      margin: 1em 0;
+    }
+    .matrix {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 4px;
+      margin: 2em auto;
+      max-width: 400px;
+    }
+    .cell {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #ddd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.9em;
+      border-radius: 4px;
+    }
+    .correct {
+      background: #4caf50;
+      color: white;
+    }
+    input[type="number"] {
+      font-size: 1.5em;
+      padding: 0.3em;
+      width: 100px;
+      margin-right: 1em;
+    }
+    button {
+      font-size: 1.2em;
+      padding: 0.5em 1em;
+      cursor: pointer;
+    }
+    @media (max-width: 500px) {
+      .question {
+        font-size: 1.5em;
+      }
+      input[type="number"] {
+        width: 80px;
+        font-size: 1.2em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Einmaleins-Trainer</h1>
+  <div class="question" id="question">3 × 5 = ?</div>
+  <input type="number" id="answer" />
+  <button onclick="checkAnswer()">Antwort prüfen</button>
+
+  <div class="matrix" id="matrix"></div>
+
+  <script>
+    const matrix = document.getElementById("matrix");
+    const question = document.getElementById("question");
+    const answer = document.getElementById("answer");
+
+    let currentX = 1;
+    let currentY = 1;
+
+    // Erzeuge Matrix (1 bis 10)
+    for (let i = 1; i <= 10; i++) {
+      for (let j = 1; j <= 10; j++) {
+        const cell = document.createElement("div");
+        cell.className = "cell";
+        cell.id = `cell-${i}-${j}`;
+        cell.textContent = `${i}×${j}`;
+        matrix.appendChild(cell);
+      }
+    }
+
+    function generateQuestion() {
+      currentX = Math.floor(Math.random() * 10) + 1;
+      currentY = Math.floor(Math.random() * 10) + 1;
+      question.textContent = `${currentX} × ${currentY} = ?`;
+      answer.value = "";
+      answer.focus();
+    }
+
+    function checkAnswer() {
+      const userAnswer = parseInt(answer.value);
+      const correct = currentX * currentY;
+      if (userAnswer === correct) {
+        const cell = document.getElementById(`cell-${currentX}-${currentY}`);
+        cell.classList.add("correct");
+        generateQuestion();
+      } else {
+        alert("Leider falsch. Versuch es noch einmal!");
+        answer.focus();
+      }
+    }
+
+    generateQuestion();
+  </script>
+</body>
+</html>
