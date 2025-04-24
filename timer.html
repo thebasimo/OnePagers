@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Countdown Timer</title>
-  <style>
+ <style>
     body {
       font-family: sans-serif;
       display: flex;
@@ -13,31 +13,40 @@
       height: 100vh;
       margin: 0;
       background: #f0f4f8;
+      padding: 1rem;
+      box-sizing: border-box;
     }
     h1 {
       margin-bottom: 1rem;
+      font-size: 6vw;
+      text-align: center;
     }
     .slider-container {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 1rem;
+      gap: 0.5rem;
       margin-bottom: 1rem;
+      width: 100%;
+      max-width: 400px;
     }
     input[type=range] {
-      width: 200px;
+      width: 100%;
     }
     #timer {
-      font-size: 2rem;
-      margin: 1rem;
+      font-size: 12vw;
+      margin: 1rem 0;
     }
     button {
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
+      padding: 1rem 2rem;
+      font-size: 5vw;
       cursor: pointer;
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
       background: #007acc;
       color: white;
+      max-width: 300px;
+      width: 100%;
     }
   </style>
 </head>
