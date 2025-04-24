@@ -3,26 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Einmaleins-Trainer</title>
+  <title>Riyas Einmaleins-Trainer</title>
   <style>
-    body {
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
       font-family: sans-serif;
       text-align: center;
-      padding: 1em;
       background: #f0f4f8;
     }
+    body {
+      display: flex;
+      flex-direction: column;
+    }
     h1 {
-      margin-bottom: 0.5em;
+      margin: 0.5em 0 0.2em;
     }
     .question {
       font-size: 2em;
-      margin: 1em 0;
+      margin: 0.5em 0;
     }
     .choices {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
       gap: 0.5em;
-      margin-bottom: 2em;
+      padding: 0 1em;
       max-width: 100%;
     }
     .choice {
@@ -39,12 +45,27 @@
       background: #e0f7fa;
       border-color: #00acc1;
     }
+    .reset-button {
+      padding: 0.5em 1em;
+      font-size: 1em;
+      background-color: #f44336;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 1em;
+      align-self: center;
+    }
+    .reset-button:hover {
+      background-color: #d32f2f;
+    }
     .matrix {
+      flex-grow: 1;
       display: grid;
       grid-template-columns: repeat(10, 1fr);
       gap: 4px;
-      margin: 2em auto;
-      max-width: 400px;
+      padding: 1em;
+      box-sizing: border-box;
     }
     .cell {
       width: 100%;
@@ -75,6 +96,7 @@
   <h1>Einmaleins-Trainer</h1>
   <div class="question" id="question">3 × 5 = ?</div>
   <div class="choices" id="choices"></div>
+  <button class="reset-button" onclick="resetMatrix()">Zurücksetzen</button>
   <div class="matrix" id="matrix"></div>
 
   <script>
@@ -86,14 +108,39 @@
     let currentY = 1;
     let correctAnswer = 0;
 
-    for (let i = 1; i <= 10; i++) {
-      for (let j = 1; j <= 10; j++) {
-        const cell = document.createElement("div");
-        cell.className = "cell";
-        cell.id = `cell-${i}-${j}`;
-        cell.textContent = `${i}×${j}`;
-        matrix.appendChild(cell);
+    const matrixStateKey = "einmaleins-matrix";
+
+    function loadMatrixState() {
+      const saved = localStorage.getItem(matrixStateKey);
+      return saved ? JSON.parse(saved) : {};
+    }
+
+    function saveMatrixState(state) {
+      localStorage.setItem(matrixStateKey, JSON.stringify(state));
+    }
+
+    let matrixState = loadMatrixState();
+
+    function renderMatrix() {
+      matrix.innerHTML = "";
+      for (let i = 1; i <= 10; i++) {
+        for (let j = 1; j <= 10; j++) {
+          const cell = document.createElement("div");
+          cell.className = "cell";
+          cell.id = `cell-${i}-${j}`;
+          cell.textContent = `${i}×${j}`;
+          if (matrixState[`${i}-${j}`]) {
+            cell.classList.add("correct");
+          }
+          matrix.appendChild(cell);
+        }
       }
+    }
+
+    function resetMatrix() {
+      matrixState = {};
+      saveMatrixState(matrixState);
+      renderMatrix();
     }
 
     function generateQuestion() {
@@ -124,14 +171,18 @@
 
     function checkAnswer(selected) {
       if (selected === correctAnswer) {
-        const cell = document.getElementById(`cell-${currentX}-${currentY}`);
+        const cellId = `cell-${currentX}-${currentY}`;
+        const cell = document.getElementById(cellId);
         cell.classList.add("correct");
+        matrixState[`${currentX}-${currentY}`] = true;
+        saveMatrixState(matrixState);
         generateQuestion();
       } else {
         alert("Leider falsch. Versuch es noch einmal!");
       }
     }
 
+    renderMatrix();
     generateQuestion();
   </script>
 </body>
