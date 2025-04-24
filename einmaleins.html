@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Einmaleins-Trainer</title>
+  <title>Riyas Einmaleins-Trainer</title>
   <style>
     body {
       font-family: sans-serif;
@@ -17,6 +17,26 @@
     .question {
       font-size: 2em;
       margin: 1em 0;
+    }
+    .choices {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1em;
+      margin-bottom: 2em;
+    }
+    .choice {
+      padding: 1em 2em;
+      font-size: 1.2em;
+      background: white;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .choice:hover {
+      background: #e0f7fa;
+      border-color: #00acc1;
     }
     .matrix {
       display: grid;
@@ -39,24 +59,13 @@
       background: #4caf50;
       color: white;
     }
-    input[type="number"] {
-      font-size: 1.5em;
-      padding: 0.3em;
-      width: 100px;
-      margin-right: 1em;
-    }
-    button {
-      font-size: 1.2em;
-      padding: 0.5em 1em;
-      cursor: pointer;
-    }
     @media (max-width: 500px) {
       .question {
         font-size: 1.5em;
       }
-      input[type="number"] {
-        width: 80px;
-        font-size: 1.2em;
+      .choice {
+        font-size: 1em;
+        padding: 0.8em 1.2em;
       }
     }
   </style>
@@ -64,20 +73,18 @@
 <body>
   <h1>Einmaleins-Trainer</h1>
   <div class="question" id="question">3 × 5 = ?</div>
-  <input type="number" id="answer" />
-  <button onclick="checkAnswer()">Antwort prüfen</button>
-
+  <div class="choices" id="choices"></div>
   <div class="matrix" id="matrix"></div>
 
   <script>
     const matrix = document.getElementById("matrix");
     const question = document.getElementById("question");
-    const answer = document.getElementById("answer");
+    const choicesContainer = document.getElementById("choices");
 
     let currentX = 1;
     let currentY = 1;
+    let correctAnswer = 0;
 
-    // Erzeuge Matrix (1 bis 10)
     for (let i = 1; i <= 10; i++) {
       for (let j = 1; j <= 10; j++) {
         const cell = document.createElement("div");
@@ -91,21 +98,36 @@
     function generateQuestion() {
       currentX = Math.floor(Math.random() * 10) + 1;
       currentY = Math.floor(Math.random() * 10) + 1;
+      correctAnswer = currentX * currentY;
       question.textContent = `${currentX} × ${currentY} = ?`;
-      answer.value = "";
-      answer.focus();
+      generateChoices();
     }
 
-    function checkAnswer() {
-      const userAnswer = parseInt(answer.value);
-      const correct = currentX * currentY;
-      if (userAnswer === correct) {
+    function generateChoices() {
+      const options = new Set([correctAnswer]);
+      while (options.size < 5) {
+        const wrong = Math.floor(Math.random() * 100) + 1;
+        if (wrong !== correctAnswer) options.add(wrong);
+      }
+      const shuffled = Array.from(options).sort(() => Math.random() - 0.5);
+
+      choicesContainer.innerHTML = "";
+      shuffled.forEach(val => {
+        const btn = document.createElement("div");
+        btn.className = "choice";
+        btn.textContent = val;
+        btn.onclick = () => checkAnswer(val);
+        choicesContainer.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(selected) {
+      if (selected === correctAnswer) {
         const cell = document.getElementById(`cell-${currentX}-${currentY}`);
         cell.classList.add("correct");
         generateQuestion();
       } else {
         alert("Leider falsch. Versuch es noch einmal!");
-        answer.focus();
       }
     }
 
