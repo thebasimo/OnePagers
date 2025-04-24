@@ -94,11 +94,9 @@
       animation: fly 2s linear forwards;
     }
     @keyframes fly {
-  0% { opacity: 1; transform: translate(0, 0) scale(1); }
-  50% { transform: translate(calc(var(--x) * 0.5), calc(var(--y) * 0.5)) scale(1.2) rotate(20deg); }
-  100% { opacity: 0; transform: translate(var(--x), var(--y)) scale(1); }
-}
-      100% { opacity: 0; transform: translate(var(--x), var(--y)); }
+      0% { opacity: 1; transform: translate(0, 0) scale(1); }
+      50% { transform: translate(calc(var(--x) * 0.5), calc(var(--y) * 0.5)) scale(1.2) rotate(20deg); }
+      100% { opacity: 0; transform: translate(var(--x), var(--y)) scale(1); }
     }
     @media (max-width: 500px) {
       .question {
@@ -188,10 +186,10 @@
       });
     }
 
-    function showSmiley() {
+    function showSmiley(icon) {
       const smiley = document.createElement("div");
       smiley.className = "smiley";
-      smiley.textContent = "😂";
+      smiley.textContent = icon;
       const startX = Math.random() * window.innerWidth;
       const startY = Math.random() * window.innerHeight;
       const endX = (Math.random() - 0.5) * 300 + "px";
@@ -211,10 +209,11 @@
         cell.classList.add("correct");
         matrixState[`${currentX}-${currentY}`] = true;
         saveMatrixState(matrixState);
-        showSmiley();
+        showSmiley("😂");
         generateQuestion();
       } else {
-        alert("Leider falsch. Versuch es noch einmal!");
+        showSmiley("😢");
+        generateChoices();
       }
     }
 
