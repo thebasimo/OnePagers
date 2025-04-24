@@ -24,7 +24,7 @@
       margin: 0.5em 0 0.2em;
     }
     .question {
-      font-size: 2em;
+      font-size: 4em;
       margin: 0.5em 0;
     }
     .choices {
@@ -89,12 +89,15 @@
     }
     .smiley {
       position: absolute;
-      font-size: 2em;
+      font-size: 4em;
       z-index: 1000;
-      animation: fly 1s linear forwards;
+      animation: fly 2s linear forwards;
     }
     @keyframes fly {
-      0% { opacity: 1; transform: translate(0, 0); }
+  0% { opacity: 1; transform: translate(0, 0) scale(1); }
+  50% { transform: translate(calc(var(--x) * 0.5), calc(var(--y) * 0.5)) scale(1.2) rotate(20deg); }
+  100% { opacity: 0; transform: translate(var(--x), var(--y)) scale(1); }
+}
       100% { opacity: 0; transform: translate(var(--x), var(--y)); }
     }
     @media (max-width: 500px) {
@@ -198,7 +201,7 @@
       smiley.style.setProperty('--x', endX);
       smiley.style.setProperty('--y', endY);
       document.body.appendChild(smiley);
-      setTimeout(() => smiley.remove(), 1000);
+      setTimeout(() => smiley.remove(), 4000);
     }
 
     function checkAnswer(selected) {
