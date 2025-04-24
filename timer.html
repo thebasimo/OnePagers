@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Countdown Timer</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background: #f0f4f8;
+    }
+    h1 {
+      margin-bottom: 1rem;
+    }
+    .slider-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    input[type=range] {
+      width: 200px;
+    }
+    #timer {
+      font-size: 2rem;
+      margin: 1rem;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background: #007acc;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <h1>Countdown Timer</h1>
+  <div class="slider-container">
+    <label for="timeSlider">Minutes:</label>
+    <input type="range" id="timeSlider" min="1" max="60" value="5" />
+    <span id="selectedTime">5</span> min
+  </div>
+  <div id="timer">05:00</div>
+  <button id="startButton">Start</button>
+  <audio id="alarmSound" src="https://actions.google.com/sounds/v1/alarms/medium_bell_ringing_near.ogg" preload="auto" playsinline></audio>
+  <script>
+    const slider = document.getElementById("timeSlider");
+    const selectedTime = document.getElementById("selectedTime");
+    const timerDisplay = document.getElementById("timer");
+    const startButton = document.getElementById("startButton");
+    const alarm = document.getElementById("alarmSound");
+    
+    let countdown;
+
+function playBellSound() {
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const oscillator = audioCtx.createOscillator();
+  const gainNode = audioCtx.createGain();
+
+  oscillator.type = 'sine'; // mellow wave
+  oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); // A5
+  gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime); // start soft
+  gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 2); // fade out
+
+  oscillator.connect(gainNode);
+  gainNode.connect(audioCtx.destination);
+  oscillator.start();
+  oscillator.stop(audioCtx.currentTime + 2);
+}
+
+function updateURL(minutes) {
+  const newUrl = `${window.location.pathname}?minutes=${minutes}`;
+  history.pushState(null, '', newUrl);
+}
+
+//    function updateURL(minutes) {
+//     const newUrl = `${window.location.origin}${window.location.pathname}?minutes=${minutes}`;
+//      history.replaceState(null, '', newUrl);
+//    }
+
+    function getTimeFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      return parseInt(params.get('minutes')) || 5;
+    }
+
+    function updateDisplay(minutes, seconds = 0) {
+      timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
+    slider.addEventListener("input", () => {
+      selectedTime.textContent = slider.value;
+      updateDisplay(parseInt(slider.value));
+      updateURL(slider.value);
+    });
+
+    startButton.addEventListener("click", () => {
+      clearInterval(countdown);
+      let totalSeconds = parseInt(slider.value) * 60;
+      countdown = setInterval(() => {
+        if (totalSeconds <= 0) {
+          clearInterval(countdown);
+          //alarm.play();
+	  alarm.load();  // ensure it's ready
+//  	  alarm.play().catch((e) => console.log("Playback prevented:", e));          
+	playBellSound(); 
+        } else {
+          totalSeconds--;
+          const mins = Math.floor(totalSeconds / 60);
+          const secs = totalSeconds % 60;
+          updateDisplay(mins, secs);
+        }
+      }, 1000);
+    });
+
+    // Initialize from URL
+    const initMinutes = getTimeFromURL();
+    slider.value = initMinutes;
+    selectedTime.textContent = initMinutes;
+    updateDisplay(initMinutes);
+    updateURL(initMinutes);
+  </script>
+</body>
+</html>
