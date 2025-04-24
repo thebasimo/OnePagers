@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Riyas Einmaleins-Trainer</title>
+  <title>Einmaleins-Trainer</title>
   <style>
     body {
       font-family: sans-serif;
@@ -19,20 +19,21 @@
       margin: 1em 0;
     }
     .choices {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1em;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.5em;
       margin-bottom: 2em;
+      max-width: 100%;
     }
     .choice {
-      padding: 1em 2em;
+      padding: 0.8em 0;
       font-size: 1.2em;
       background: white;
       border: 2px solid #ccc;
       border-radius: 8px;
       cursor: pointer;
       transition: background 0.3s, border-color 0.3s;
+      width: 100%;
     }
     .choice:hover {
       background: #e0f7fa;
@@ -65,7 +66,7 @@
       }
       .choice {
         font-size: 1em;
-        padding: 0.8em 1.2em;
+        padding: 0.8em 0.3em;
       }
     }
   </style>
@@ -104,6 +105,7 @@
     }
 
     function generateChoices() {
+      choicesContainer.innerHTML = "";
       const options = new Set([correctAnswer]);
       while (options.size < 5) {
         const wrong = Math.floor(Math.random() * 100) + 1;
@@ -111,7 +113,6 @@
       }
       const shuffled = Array.from(options).sort(() => Math.random() - 0.5);
 
-      choicesContainer.innerHTML = "";
       shuffled.forEach(val => {
         const btn = document.createElement("div");
         btn.className = "choice";
