@@ -12,7 +12,6 @@
       width: 100%;
       font-family: sans-serif;
       text-align: center;
-      background: #f0f4f8;
       overflow: hidden;
     }
     body {
@@ -22,10 +21,12 @@
     }
     h1 {
       margin: 0.5em 0 0.2em;
+      z-index: 1;
     }
     .question {
       font-size: 4em;
       margin: 0.5em 0;
+      z-index: 1;
     }
     .choices {
       display: grid;
@@ -34,6 +35,8 @@
       padding: 0 1em;
       max-width: 100%;
       box-sizing: border-box;
+      z-index: 1;
+      position: relative;
     }
     .choice {
       padding: 0.8em 0;
@@ -59,6 +62,7 @@
       cursor: pointer;
       margin: 1em;
       align-self: center;
+      z-index: 1;
     }
     .reset-button:hover {
       background-color: #d32f2f;
@@ -74,8 +78,24 @@
       max-height: 100%;
       box-sizing: border-box;
       padding: 0.5em;
+      position: relative;
+      z-index: 1;
+    }
+    .matrix::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      background-image: var(--bg-url, url('https://source.unsplash.com/random/800x800/?cute,animal'));
+      background-size: cover;
+      background-position: center;
     }
     .cell {
+      position: relative;
+      z-index: 1;
       background: #ddd;
       display: flex;
       justify-content: center;
@@ -83,9 +103,8 @@
       font-size: 0.9em;
       border-radius: 4px;
     }
-    .correct {
-      background: #4caf50;
-      color: white;
+    .hidden {
+      visibility: hidden;
     }
     .smiley {
       position: absolute;
@@ -147,7 +166,7 @@
           cell.id = `cell-${i}-${j}`;
           cell.textContent = `${i}×${j}`;
           if (matrixState[`${i}-${j}`]) {
-            cell.classList.add("correct");
+            cell.classList.add("hidden");
           }
           matrix.appendChild(cell);
         }
@@ -158,6 +177,22 @@
       matrixState = {};
       saveMatrixState(matrixState);
       renderMatrix();
+      const matrixElement = document.querySelector('.matrix');
+      const imageUrls = [
+  'https://images.unsplash.com/photo-1601758123927-196d4f4a5b57',
+  'https://images.unsplash.com/photo-1555685812-4b943f1cb0eb',
+  'https://images.unsplash.com/photo-1560807707-8cc77767d783',
+  'https://images.unsplash.com/photo-1518717758536-85ae29035b6d',
+  'https://images.unsplash.com/photo-1504203705549-7d5bc3fbe5d0',
+  'https://images.unsplash.com/photo-1543852786-1cf6624b9987',
+  'https://images.unsplash.com/photo-1574158622682-e40e69881006',
+  'https://images.unsplash.com/photo-1537151672256-9533baa1bfa5',
+  'https://images.unsplash.com/photo-1558788353-f76d92427f16',
+  'https://images.unsplash.com/photo-1546182990-dffeafbe841d'
+];
+const randomIndex = Math.floor(Math.random() * imageUrls.length);
+const newUrl = `url('${imageUrls[randomIndex]}?w=800&h=800&fit=crop')`;
+      matrixElement.style.setProperty('--bg-url', newUrl);
     }
 
     function generateQuestion() {
@@ -206,7 +241,7 @@
       if (selected === correctAnswer) {
         const cellId = `cell-${currentX}-${currentY}`;
         const cell = document.getElementById(cellId);
-        cell.classList.add("correct");
+        cell.classList.add("hidden");
         matrixState[`${currentX}-${currentY}`] = true;
         saveMatrixState(matrixState);
         showSmiley("😂");
