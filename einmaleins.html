@@ -18,6 +18,7 @@
     body {
       display: flex;
       flex-direction: column;
+      position: relative;
     }
     h1 {
       margin: 0.5em 0 0.2em;
@@ -86,6 +87,16 @@
       background: #4caf50;
       color: white;
     }
+    .smiley {
+      position: absolute;
+      font-size: 2em;
+      z-index: 1000;
+      animation: fly 1s linear forwards;
+    }
+    @keyframes fly {
+      0% { opacity: 1; transform: translate(0, 0); }
+      100% { opacity: 0; transform: translate(var(--x), var(--y)); }
+    }
     @media (max-width: 500px) {
       .question {
         font-size: 1.5em;
@@ -98,7 +109,7 @@
   </style>
 </head>
 <body>
-  <h1>Einmaleins-Trainer</h1>
+  <h1>Riyas Einmaleins-Trainer</h1>
   <div class="question" id="question">3 × 5 = ?</div>
   <div class="choices" id="choices"></div>
   <button class="reset-button" onclick="resetMatrix()">Zurücksetzen</button>
@@ -174,6 +185,22 @@
       });
     }
 
+    function showSmiley() {
+      const smiley = document.createElement("div");
+      smiley.className = "smiley";
+      smiley.textContent = "😂";
+      const startX = Math.random() * window.innerWidth;
+      const startY = Math.random() * window.innerHeight;
+      const endX = (Math.random() - 0.5) * 300 + "px";
+      const endY = (Math.random() - 0.5) * 300 + "px";
+      smiley.style.left = startX + "px";
+      smiley.style.top = startY + "px";
+      smiley.style.setProperty('--x', endX);
+      smiley.style.setProperty('--y', endY);
+      document.body.appendChild(smiley);
+      setTimeout(() => smiley.remove(), 1000);
+    }
+
     function checkAnswer(selected) {
       if (selected === correctAnswer) {
         const cellId = `cell-${currentX}-${currentY}`;
@@ -181,6 +208,7 @@
         cell.classList.add("correct");
         matrixState[`${currentX}-${currentY}`] = true;
         saveMatrixState(matrixState);
+        showSmiley();
         generateQuestion();
       } else {
         alert("Leider falsch. Versuch es noch einmal!");
