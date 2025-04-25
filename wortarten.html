@@ -85,9 +85,57 @@
   </div>
 
   <script>
-    const nouns = ["Haus", "Katze", "Baum", "Auto", "Wasser"];
-    const adjectives = ["schnell", "grün", "klug", "hoch", "klein"];
-    const verbs = ["laufen", "essen", "schlafen", "springen", "lesen"];
+    const nouns = ["Haus", "Katze", "Baum", "Auto", "Wasser", "Blume", "Buch", "Stuhl", "Tisch", "Straße",
+      "Lampe", "Hut", "Fenster", "Tür", "Schule", "Lehrer", "Kind", "Fahrrad", "Zug", "Bus",
+      "Flugzeug", "Schiff", "Wolke", "Sonne", "Mond", "Stern", "Himmel", "Computer", "Maus", "Tastatur",
+      "Bild", "Foto", "Hund", "Vogel", "Fisch", "See", "Fluss", "Berg", "Wald", "Wiese",
+      "Blatt", "Zweig", "Ast", "Blume", "Garten", "Zaun", "Hausaufgabe", "Spiel", "Ball", "Tor",
+      "Schlüssel", "Tasche", "Jacke", "Hemd", "Hose", "Schuh", "Socke", "Brille", "Uhr", "Kamera",
+      "Fernseher", "Radio", "Telefon", "Handy", "Tablet", "Stadt", "Dorf", "Land", "Insel", "Kontinent",
+      "Auto", "Motorrad", "Roller", "Lastwagen", "Boot", "Rakete", "Planet", "Universum", "Milchstraße", "Atom",
+      "Molekül", "Zelle", "Organ", "Körper", "Kopf", "Arm", "Bein", "Finger", "Zeh", "Nase",
+      "Ohr", "Auge", "Mund", "Zahn", "Hals", "Rücken", "Bauch", "Herz", "Lunge", "Leber",
+      "Magen", "Darm", "Haut", "Blut", "Knochen", "Muskel", "Nerv", "Gehirn", "Seele", "Geist",
+      "Gedanke", "Gefühl", "Freude", "Angst", "Liebe", "Hass", "Mut", "Hoffnung", "Vertrauen", "Trauer",
+      "Schmerz", "Lachen", "Weinen", "Spielzeug", "Puppe", "Auto", "Brettspiel", "Lego", "Puzzle", "Knete",
+      "Bleistift", "Füller", "Radiergummi", "Lineal", "Spitzer", "Heft", "Block", "Ordner", "Mappe", "Papier",
+      "Notiz", "Brief", "Postkarte", "Paket", "Geschenk", "Blume", "Topf", "Pfanne", "Teller", "Becher",
+      "Glas", "Messer", "Gabel", "Löffel", "Kochtopf", "Kühlschrank", "Ofen", "Herd", "Mikrowelle", "Waschmaschine",
+      "Trockner", "Besen", "Schaufel", "Eimer", "Staubsauger", "Buch", "Roman", "Geschichte", "Märchen", "Erzählung" ];
+
+    const adjectives = ["schnell", "grün", "klug", "hoch", "klein", "groß", "dumm", "lustig", "traurig", "fröhlich",
+      "mutig", "ängstlich", "hell", "dunkel", "leise", "laut", "warm", "kalt", "weich", "hart",
+      "neu", "alt", "schön", "hässlich", "sauber", "schmutzig", "stark", "schwach", "reich", "arm",
+      "freundlich", "böse", "nett", "gemein", "scharf", "mild", "sauer", "süß", "bitter", "salzig",
+      "trocken", "nass", "ruhig", "wild", "schnell", "langsam", "offen", "geschlossen", "leer", "voll",
+      "schwer", "leicht", "ganz", "kaputt", "gesund", "krank", "lustlos", "energisch", "schläfrig", "wach",
+      "tief", "flach", "weich", "glatt", "rau", "spitz", "rund", "eckig", "kurz", "lang",
+      "dick", "dünn", "breit", "eng", "nah", "fern", "einfach", "kompliziert", "normal", "seltsam",
+      "schüchtern", "offen", "ehrlich", "falsch", "richtig", "fleißig", "faul", "sorgfältig", "nachlässig", "geduldig",
+      "ungeduldig", "ruhig", "nervös", "zufrieden", "unzufrieden", "genau", "unpräzise", "bescheiden", "stolz", "still",
+      "laut", "lebendig", "tot", "kräftig", "schwach", "tapfer", "feige", "hübsch", "unscheinbar", "edel",
+      "wertvoll", "billig", "teuer", "bunt", "farblos", "einfarbig", "gepunktet", "gestreift", "kariert", "gemustert",
+      "sorgsam", "liebevoll", "grausam", "hilfreich", "egoistisch", "gemeinsam", "einsam", "verrückt", "normal", "klug",
+      "witzig", "ernst", "spielend", "hartnäckig", "sanft", "brutal", "ehrgeizig", "besonnen", "verspielt", "nüchtern",
+      "wichtig", "unwichtig", "zentral", "nebensächlich", "toll", "langweilig", "spannend", "komisch", "traumhaft", "realistisch" ];
+
+    const verbs = ["laufen", "essen", "schlafen", "springen", "lesen", "schreiben", "sprechen", "sehen", "hören", "denken",
+      "fühlen", "gehen", "fahren", "kommen", "bleiben", "nehmen", "geben", "helfen", "suchen", "finden",
+      "arbeiten", "spielen", "lernen", "studieren", "kaufen", "verkaufen", "bezahlen", "kochen", "backen", "trinken",
+      "malen", "zeichnen", "tanzen", "singen", "lachen", "weinen", "rufen", "antworten", "fragen", "vergessen",
+      "erinnern", "liegen", "stehen", "sitzen", "tragen", "ziehen", "drücken", "öffnen", "schließen", "waschen",
+      "putzen", "räumen", "rechnen", "zählen", "messen", "bauen", "bauen", "reparieren", "zerstören", "schneiden",
+      "kleben", "werfen", "fangen", "spielen", "spielen", "rufen", "fliegen", "springen", "rollen", "klettern",
+      "tauchen", "reiten", "schwimmen", "fahren", "bellen", "miauen", "quaken", "brüllen", "klatschen", "hüpfen",
+      "nicken", "schütteln", "winken", "zeigen", "greifen", "kauen", "schlucken", "atmen", "niesen", "husten",
+      "gähnen", "schnarchen", "träumen", "schlafen", "wachen", "aufstehen", "hinlegen", "ausruhen", "arbeiten", "sich beeilen",
+      "sich freuen", "sich ärgern", "sich schämen", "sich erinnern", "sich verlieben", "sich streiten", "sich versöhnen", "sich wundern", "sich langweilen", "sich interessieren",
+      "sich konzentrieren", "sich bewegen", "sich drehen", "sich verstecken", "sich zeigen", "sich waschen", "sich anziehen", "sich ausziehen", "sich kämmen", "sich schminken",
+      "sich rasieren", "sich beruhigen", "sich freuen", "sich entschuldigen", "sich bedanken", "rufen", "flüstern", "singen", "schreien", "reden",
+      "lärmen", "verstummen", "summen", "murmel", "denken", "nachdenken", "glauben", "zweifeln", "wissen", "vermuten",
+      "sehen", "ansehen", "zusehen", "beobachten", "überlegen", "planen", "entscheiden", "vergleichen", "erklären", "beschreiben",
+      "zeichnen", "malen", "spielen", "üben", "lernen", "verstehen", "erkennen", "analysieren", "bewerten", "entwickeln",
+      "entdecken", "erfinden", "bauen", "erschaffen", "produzieren", "transportieren", "kontrollieren", "organisieren", "strukturieren", "programmieren" ];
 
     let correct = 0;
     let incorrect = 0;
