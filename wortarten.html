@@ -137,7 +137,7 @@
       "zeichnen", "malen", "spielen", "üben", "lernen", "verstehen", "erkennen", "analysieren", "bewerten", "entwickeln",
       "entdecken", "erfinden", "bauen", "erschaffen", "produzieren", "transportieren", "kontrollieren", "organisieren", "strukturieren", "programmieren" ];
 
-        let correct = 0;
+         let correct = 0;
     let incorrect = 0;
 
     const scoreDisplay = document.getElementById("score");
@@ -160,41 +160,21 @@
       wordDisplay.textContent = currentWord;
     }
 
-    let audioContext;
-    let unlocked = false;
+    let audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-    function initAudioContext() {
-      try {
-        if (!audioContext) {
-          audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    async function ensureAudioContextRunning() {
+      if (audioContext.state === "suspended") {
+        try {
+          await audioContext.resume();
+          console.log("AudioContext resumed");
+        } catch (e) {
+          console.error("Fehler beim Resumen des AudioContext:", e);
         }
-      } catch (e) {
-        console.error("AudioContext konnte nicht erstellt werden:", e);
       }
     }
 
-    function unlockAudio() {
-      if (unlocked) return;
-      initAudioContext();
-      if (!audioContext) return;
-      try {
-        const osc = audioContext.createOscillator();
-        const gain = audioContext.createGain();
-        osc.frequency.value = 440;
-        gain.gain.value = 0.001; // sehr leise
-        osc.connect(gain);
-        gain.connect(audioContext.destination);
-        osc.start();
-        osc.stop(audioContext.currentTime + 0.05);
-        unlocked = true;
-        console.log("AudioContext freigegeben");
-      } catch (e) {
-        console.warn("Fehler beim Freigeben des AudioContext:", e);
-      }
-    }
-
-    function playTone(frequency, duration = 200) {
-      if (!audioContext) return;
+    async function playTone(frequency, duration = 200) {
+      await ensureAudioContextRunning();
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
       oscillator.type = "sine";
@@ -226,16 +206,16 @@
       zone.addEventListener("dragleave", () => {
         zone.classList.remove("over");
       });
-      zone.addEventListener("drop", e => {
+      zone.addEventListener("drop", async e => {
         e.preventDefault();
         zone.classList.remove("over");
         const droppedType = zone.getAttribute("data-type");
         if (droppedType === currentType) {
           correct++;
-          playCorrectSound();
+          await playCorrectSound();
         } else {
           incorrect++;
-          playIncorrectSound();
+          await playIncorrectSound();
         }
         updateScore();
         pickWord();
@@ -247,8 +227,8 @@
     }
 
     // Benutzeraktion für Safari/iOS absichern
-    window.addEventListener('touchstart', unlockAudio, { once: true });
-    window.addEventListener('click', unlockAudio, { once: true });
+    window.addEventListener("touchstart", () => ensureAudioContextRunning(), { once: true });
+    window.addEventListener("click", () => ensureAudioContextRunning(), { once: true });
 
     pickWord();
   </script>
