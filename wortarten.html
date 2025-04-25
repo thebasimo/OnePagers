@@ -137,7 +137,7 @@
       "zeichnen", "malen", "spielen", "üben", "lernen", "verstehen", "erkennen", "analysieren", "bewerten", "entwickeln",
       "entdecken", "erfinden", "bauen", "erschaffen", "produzieren", "transportieren", "kontrollieren", "organisieren", "strukturieren", "programmieren" ];
 
- let correct = 0;
+    let correct = 0;
     let incorrect = 0;
 
     const scoreDisplay = document.getElementById("score");
@@ -160,24 +160,25 @@
       wordDisplay.textContent = currentWord;
     }
 
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
     function playTone(frequency, duration = 200) {
-      const context = new (window.AudioContext || window.webkitAudioContext)();
-      const oscillator = context.createOscillator();
-      const gainNode = context.createGain();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
       oscillator.type = "sine";
-      oscillator.frequency.setValueAtTime(frequency, context.currentTime);
+      oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
       oscillator.connect(gainNode);
-      gainNode.connect(context.destination);
+      gainNode.connect(audioContext.destination);
       oscillator.start();
-      oscillator.stop(context.currentTime + duration / 1000);
+      oscillator.stop(audioContext.currentTime + duration / 1000);
     }
 
     function playCorrectSound() {
-      playTone(600); // hoher Ton
+      playTone(600); // neuer hoher Ton
     }
 
     function playIncorrectSound() {
-      playTone(300); // tiefer Ton
+      playTone(400); // neuer tiefer Ton
     }
 
     wordDisplay.addEventListener("dragstart", e => {
@@ -211,6 +212,12 @@
     function updateScore() {
       scoreDisplay.textContent = `✅ ${correct} | ❌ ${incorrect}`;
     }
+
+    document.body.addEventListener('click', () => {
+      if (audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+    }, { once: true });
 
     pickWord();
   </script>
