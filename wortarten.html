@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wortarten-Spiel</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      background: #f0f0f0;
+    }
+    header {
+      background: #4caf50;
+      color: white;
+      width: 100%;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.2rem;
+    }
+    #score {
+      margin: 1rem;
+      font-size: 1.5rem;
+    }
+    #word {
+      margin: 1rem;
+      font-size: 2rem;
+      font-weight: bold;
+      background: white;
+      padding: 1rem 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      cursor: grab;
+    }
+    .categories {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+    .dropzone {
+      width: 120px;
+      height: 120px;
+      background: white;
+      border: 2px dashed #aaa;
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    .dropzone.over {
+      border-color: #4caf50;
+    }
+    @media (max-width: 600px) {
+      #word {
+        font-size: 1.5rem;
+        padding: 1rem;
+      }
+      .dropzone {
+        width: 90px;
+        height: 90px;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>Wortarten-Spiel</header>
+  <div id="score">✅ 0 | ❌ 0</div>
+  <div id="word" draggable="true"></div>
+  <div class="categories">
+    <div class="dropzone" data-type="nomen">Nomen</div>
+    <div class="dropzone" data-type="adjektiv">Adjektiv</div>
+    <div class="dropzone" data-type="verb">Verb</div>
+  </div>
+
+  <script>
+    const nouns = ["Haus", "Katze", "Baum", "Auto", "Wasser", "Blume", "Buch", "Stuhl", "Tisch", "Straße",
+      "Lampe", "Hut", "Fenster", "Tür", "Schule", "Lehrer", "Kind", "Fahrrad", "Zug", "Bus",
+      "Flugzeug", "Schiff", "Wolke", "Sonne", "Mond", "Stern", "Himmel", "Computer", "Maus", "Tastatur",
+      "Bild", "Foto", "Hund", "Vogel", "Fisch", "See", "Fluss", "Berg", "Wald", "Wiese",
+      "Blatt", "Zweig", "Ast", "Blume", "Garten", "Zaun", "Hausaufgabe", "Spiel", "Ball", "Tor",
+      "Schlüssel", "Tasche", "Jacke", "Hemd", "Hose", "Schuh", "Socke", "Brille", "Uhr", "Kamera",
+      "Fernseher", "Radio", "Telefon", "Handy", "Tablet", "Stadt", "Dorf", "Land", "Insel", "Kontinent",
+      "Auto", "Motorrad", "Roller", "Lastwagen", "Boot", "Rakete", "Planet", "Universum", "Milchstraße", "Atom",
+      "Molekül", "Zelle", "Organ", "Körper", "Kopf", "Arm", "Bein", "Finger", "Zeh", "Nase",
+      "Ohr", "Auge", "Mund", "Zahn", "Hals", "Rücken", "Bauch", "Herz", "Lunge", "Leber",
+      "Magen", "Darm", "Haut", "Blut", "Knochen", "Muskel", "Nerv", "Gehirn", "Seele", "Geist",
+      "Gedanke", "Gefühl", "Freude", "Angst", "Liebe", "Hass", "Mut", "Hoffnung", "Vertrauen", "Trauer",
+      "Schmerz", "Lachen", "Weinen", "Spielzeug", "Puppe", "Auto", "Brettspiel", "Lego", "Puzzle", "Knete",
+      "Bleistift", "Füller", "Radiergummi", "Lineal", "Spitzer", "Heft", "Block", "Ordner", "Mappe", "Papier",
+      "Notiz", "Brief", "Postkarte", "Paket", "Geschenk", "Blume", "Topf", "Pfanne", "Teller", "Becher",
+      "Glas", "Messer", "Gabel", "Löffel", "Kochtopf", "Kühlschrank", "Ofen", "Herd", "Mikrowelle", "Waschmaschine",
+      "Trockner", "Besen", "Schaufel", "Eimer", "Staubsauger", "Buch", "Roman", "Geschichte", "Märchen", "Erzählung" ];
+
+    const adjectives = ["schnell", "grün", "klug", "hoch", "klein", "groß", "dumm", "lustig", "traurig", "fröhlich",
+      "mutig", "ängstlich", "hell", "dunkel", "leise", "laut", "warm", "kalt", "weich", "hart",
+      "neu", "alt", "schön", "hässlich", "sauber", "schmutzig", "stark", "schwach", "reich", "arm",
+      "freundlich", "böse", "nett", "gemein", "scharf", "mild", "sauer", "süß", "bitter", "salzig",
+      "trocken", "nass", "ruhig", "wild", "schnell", "langsam", "offen", "geschlossen", "leer", "voll",
+      "schwer", "leicht", "ganz", "kaputt", "gesund", "krank", "lustlos", "energisch", "schläfrig", "wach",
+      "tief", "flach", "weich", "glatt", "rau", "spitz", "rund", "eckig", "kurz", "lang",
+      "dick", "dünn", "breit", "eng", "nah", "fern", "einfach", "kompliziert", "normal", "seltsam",
+      "schüchtern", "offen", "ehrlich", "falsch", "richtig", "fleißig", "faul", "sorgfältig", "nachlässig", "geduldig",
+      "ungeduldig", "ruhig", "nervös", "zufrieden", "unzufrieden", "genau", "unpräzise", "bescheiden", "stolz", "still",
+      "laut", "lebendig", "tot", "kräftig", "schwach", "tapfer", "feige", "hübsch", "unscheinbar", "edel",
+      "wertvoll", "billig", "teuer", "bunt", "farblos", "einfarbig", "gepunktet", "gestreift", "kariert", "gemustert",
+      "sorgsam", "liebevoll", "grausam", "hilfreich", "egoistisch", "gemeinsam", "einsam", "verrückt", "normal", "klug",
+      "witzig", "ernst", "spielend", "hartnäckig", "sanft", "brutal", "ehrgeizig", "besonnen", "verspielt", "nüchtern",
+      "wichtig", "unwichtig", "zentral", "nebensächlich", "toll", "langweilig", "spannend", "komisch", "traumhaft", "realistisch" ];
+
+    const verbs = ["laufen", "essen", "schlafen", "springen", "lesen", "schreiben", "sprechen", "sehen", "hören", "denken",
+      "fühlen", "gehen", "fahren", "kommen", "bleiben", "nehmen", "geben", "helfen", "suchen", "finden",
+      "arbeiten", "spielen", "lernen", "studieren", "kaufen", "verkaufen", "bezahlen", "kochen", "backen", "trinken",
+      "malen", "zeichnen", "tanzen", "singen", "lachen", "weinen", "rufen", "antworten", "fragen", "vergessen",
+      "erinnern", "liegen", "stehen", "sitzen", "tragen", "ziehen", "drücken", "öffnen", "schließen", "waschen",
+      "putzen", "räumen", "rechnen", "zählen", "messen", "bauen", "bauen", "reparieren", "zerstören", "schneiden",
+      "kleben", "werfen", "fangen", "spielen", "spielen", "rufen", "fliegen", "springen", "rollen", "klettern",
+      "tauchen", "reiten", "schwimmen", "fahren", "bellen", "miauen", "quaken", "brüllen", "klatschen", "hüpfen",
+      "nicken", "schütteln", "winken", "zeigen", "greifen", "kauen", "schlucken", "atmen", "niesen", "husten",
+      "gähnen", "schnarchen", "träumen", "schlafen", "wachen", "aufstehen", "hinlegen", "ausruhen", "arbeiten", "sich beeilen",
+      "sich freuen", "sich ärgern", "sich schämen", "sich erinnern", "sich verlieben", "sich streiten", "sich versöhnen", "sich wundern", "sich langweilen", "sich interessieren",
+      "sich konzentrieren", "sich bewegen", "sich drehen", "sich verstecken", "sich zeigen", "sich waschen", "sich anziehen", "sich ausziehen", "sich kämmen", "sich schminken",
+      "sich rasieren", "sich beruhigen", "sich freuen", "sich entschuldigen", "sich bedanken", "rufen", "flüstern", "singen", "schreien", "reden",
+      "lärmen", "verstummen", "summen", "murmel", "denken", "nachdenken", "glauben", "zweifeln", "wissen", "vermuten",
+      "sehen", "ansehen", "zusehen", "beobachten", "überlegen", "planen", "entscheiden", "vergleichen", "erklären", "beschreiben",
+      "zeichnen", "malen", "spielen", "üben", "lernen", "verstehen", "erkennen", "analysieren", "bewerten", "entwickeln",
+      "entdecken", "erfinden", "bauen", "erschaffen", "produzieren", "transportieren", "kontrollieren", "organisieren", "strukturieren", "programmieren" ];
+
+ let correct = 0;
+    let incorrect = 0;
+
+    const scoreDisplay = document.getElementById("score");
+    const wordDisplay = document.getElementById("word");
+    let currentWord = "";
+    let currentType = "";
+
+    function pickWord() {
+      const typeIndex = Math.floor(Math.random() * 3);
+      if (typeIndex === 0) {
+        currentWord = nouns[Math.floor(Math.random() * nouns.length)];
+        currentType = "nomen";
+      } else if (typeIndex === 1) {
+        currentWord = adjectives[Math.floor(Math.random() * adjectives.length)];
+        currentType = "adjektiv";
+      } else {
+        currentWord = verbs[Math.floor(Math.random() * verbs.length)];
+        currentType = "verb";
+      }
+      wordDisplay.textContent = currentWord;
+    }
+
+    function playTone(frequency, duration = 200) {
+      const context = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = context.createOscillator();
+      const gainNode = context.createGain();
+      oscillator.type = "sine";
+      oscillator.frequency.setValueAtTime(frequency, context.currentTime);
+      oscillator.connect(gainNode);
+      gainNode.connect(context.destination);
+      oscillator.start();
+      oscillator.stop(context.currentTime + duration / 1000);
+    }
+
+    function playCorrectSound() {
+      playTone(600); // hoher Ton
+    }
+
+    function playIncorrectSound() {
+      playTone(300); // tiefer Ton
+    }
+
+    wordDisplay.addEventListener("dragstart", e => {
+      e.dataTransfer.setData("text/plain", currentType);
+    });
+
+    document.querySelectorAll(".dropzone").forEach(zone => {
+      zone.addEventListener("dragover", e => {
+        e.preventDefault();
+        zone.classList.add("over");
+      });
+      zone.addEventListener("dragleave", () => {
+        zone.classList.remove("over");
+      });
+      zone.addEventListener("drop", e => {
+        e.preventDefault();
+        zone.classList.remove("over");
+        const droppedType = zone.getAttribute("data-type");
+        if (droppedType === currentType) {
+          correct++;
+          playCorrectSound();
+        } else {
+          incorrect++;
+          playIncorrectSound();
+        }
+        updateScore();
+        pickWord();
+      });
+    });
+
+    function updateScore() {
+      scoreDisplay.textContent = `✅ ${correct} | ❌ ${incorrect}`;
+    }
+
+    pickWord();
+  </script>
+</body>
+</html>
